@@ -69,6 +69,50 @@
                         <div class="accordion-group widget-box">
                             <div class="accordion-heading">
                                 <div class="widget-title">
+                                    <a data-parent="#collapse-group" href="#collapseGVeiculo" data-toggle="collapse">
+                                      <span><i class='bx bx-car icon-cli'></i></span>
+                                      <h5 style="padding-left: 28px">Veículos</h5>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="collapse accordion-body" id="collapseGVeiculo">
+                                <div class="widget-content">
+                                    <table class="table table-bordered">
+                                        <tbody>
+                                        <tr>
+                                            <td>
+                                                <label>
+                                                    <input name="vVeiculo" class="marcar" type="checkbox" checked="checked" value="1" />
+                                                    <span class="lbl"> Visualizar Veículo</span>
+                                                </label>
+                                            </td>
+                                            <td>
+                                                <label>
+                                                    <input name="aVeiculo" class="marcar" type="checkbox" value="1" />
+                                                    <span class="lbl"> Adicionar Veículo</span>
+                                                </label>
+                                            </td>
+                                            <td>
+                                                <label>
+                                                    <input name="eVeiculo" class="marcar" type="checkbox" value="1" />
+                                                    <span class="lbl"> Editar Veículo</span>
+                                                </label>
+                                            </td>
+                                            <td>
+                                                <label>
+                                                    <input name="dVeiculo" class="marcar" type="checkbox" value="1" />
+                                                    <span class="lbl"> Excluir Veículo</span>
+                                                </label>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-group widget-box">
+                            <div class="accordion-heading">
+                                <div class="widget-title">
                                     <a data-parent="#collapse-group" href="#collapseGTwo" data-toggle="collapse">
                                       <span><i class='bx bx-package icon-cli'></i></span>
                                       <h5 style="padding-left: 28px">Produtos</h5>

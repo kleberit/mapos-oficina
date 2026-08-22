@@ -96,6 +96,24 @@ $totalProdutos = 0;
                     </div>
                 </div>
 
+                <?php if (! empty($result->veiculos_id)) : ?>
+                    <div class="subtitle">DADOS DO VEÍCULO</div>
+                    <div class="dados">
+                        <div>
+                            <span><b>Placa: <?= $result->placa ?></b></span><br />
+                            <span>Modelo: <?= $result->modelo ?></span><br />
+                        </div>
+                        <div style="text-align: right;">
+                            <?php if ($result->ano || $result->cor) : ?>
+                                <span><?= trim(($result->ano ? 'Ano: '.$result->ano.' ' : '').($result->cor ? '/ Cor: '.$result->cor : '')) ?></span><br />
+                            <?php endif; ?>
+                            <?php if ($result->km) : ?>
+                                <span>KM: <?= $result->km ?></span><br />
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                <?php endif; ?>
+
                 <?php if ($result->descricaoProduto) : ?>
                     <div class="subtitle">DESCRIÇÃO</div>
                     <div class="dados">
@@ -350,6 +368,24 @@ $totalProdutos = 0; ?>
                             <span>CEP: <?= $result->cep ?></span><br />
                         </div>
                     </div>
+
+                    <?php if (! empty($result->veiculos_id)) : ?>
+                        <div class="subtitle">DADOS DO VEÍCULO</div>
+                        <div class="dados">
+                            <div>
+                                <span><b>Placa: <?= $result->placa ?></b></span><br />
+                                <span>Modelo: <?= $result->modelo ?></span><br />
+                            </div>
+                            <div style="text-align: right;">
+                                <?php if ($result->ano || $result->cor) : ?>
+                                    <span><?= trim(($result->ano ? 'Ano: '.$result->ano.' ' : '').($result->cor ? '/ Cor: '.$result->cor : '')) ?></span><br />
+                                <?php endif; ?>
+                                <?php if ($result->km) : ?>
+                                    <span>KM: <?= $result->km ?></span><br />
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
 
                     <?php if ($result->descricaoProduto) : ?>
                         <div class="subtitle">DESCRIÇÃO</div>

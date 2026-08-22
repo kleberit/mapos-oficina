@@ -1,4 +1,32 @@
 
+# MAPOS - Oficina
+
+Fork do [Map-OS](https://github.com/RamonSilva20/mapos) customizado para oficinas mecânicas:
+cadastro de veículos (placa, modelo, ano, cor, KM, chassi), busca por placa na hora de criar a
+O.S., e os dados do veículo propagados pra impressão, e-mail e relatórios. Inclui instalador
+automático via Docker, pensado pra rodar num PC dedicado da oficina.
+
+## Instalação rápida (Windows, um único comando)
+
+Abra o **PowerShell como Administrador** e rode:
+
+```powershell
+iwr -useb https://raw.githubusercontent.com/kleberit/mapos-oficina/main/install.ps1 -OutFile "$env:TEMP\mapos-install.ps1"
+& "$env:TEMP\mapos-install.ps1"
+```
+
+O script instala o Docker Desktop (se ainda não tiver), baixa o sistema, sobe os containers,
+cria o usuário administrador (vai perguntar nome/e-mail/senha na hora) e deixa o backup
+automático configurado em `C:\BKP-MAPOS`. Detalhes em [`install.ps1`](install.ps1),
+[`docker/startup/README.md`](docker/startup/README.md) (subida automática ao ligar o PC) e
+[`docker/backup/README.md`](docker/backup/README.md) (backup).
+
+⚠️ Numa máquina Windows totalmente limpa (sem WSL2 habilitado ainda), o instalador reinicia o
+computador **uma vez**, sozinho, e continua a instalação automaticamente assim que alguém logar
+de volta no Windows.
+
+---
+
 ![MapOS](https://raw.githubusercontent.com/RamonSilva20/mapos/master/assets/img/logo.png)
 
 ![version](https://img.shields.io/badge/version-4.54.0-blue.svg?longCache=true&style=flat-square)

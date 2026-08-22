@@ -1,0 +1,23 @@
+# Build context do docker/etc/php/Dockerfile é a raiz do projeto (..).
+# Isso evita copiar lixo/dados de runtime pra dentro da imagem.
+
+.git
+.github
+
+# dados que ficam em bind mount/volume em tempo de execução, não precisam
+# (nem devem) ser "assados" dentro da imagem
+application/logs/*
+application/cache/*
+assets/uploads/*
+assets/userImage/*
+install/files/*
+docker/data
+
+# vendor é resolvido pelo estágio "vendor" do Dockerfile (composer install),
+# não precisa (e não deve) vir de uma cópia local desatualizada
+vendor/
+application/vendor/
+
+node_modules/
+.vscode
+.idea

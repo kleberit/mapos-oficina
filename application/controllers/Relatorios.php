@@ -436,6 +436,7 @@ class Relatorios extends MY_Controller
                 return [
                     'idOs' => $item['idOs'],
                     'nomeCliente' => $item['nomeCliente'],
+                    'placa' => $item['placa'],
                     'status' => $item['status'],
                     'dataFinal' => $item['dataInicial'],
                     'descricaoProduto' => $item['descricaoProduto'],
@@ -451,6 +452,7 @@ class Relatorios extends MY_Controller
             $cabecalho = [
                 'ID OS' => 'integer',
                 'Cliente' => 'string',
+                'Placa' => 'string',
                 'Status' => 'string',
                 'Data' => 'YYYY-MM-DD',
                 'Descrição' => 'string',
@@ -470,6 +472,7 @@ class Relatorios extends MY_Controller
             }
             $writer->writeSheetRow('Sheet1', []);
             $writer->writeSheetRow('Sheet1', [
+                null,
                 null,
                 null,
                 null,
@@ -552,6 +555,7 @@ class Relatorios extends MY_Controller
                 return [
                     'idOs' => $item['idOs'],
                     'nomeCliente' => $item['nomeCliente'],
+                    'placa' => $item['placa'],
                     'status' => $item['status'],
                     'dataFinal' => $item['dataInicial'],
                     'descricaoProduto' => $item['descricaoProduto'],
@@ -567,6 +571,7 @@ class Relatorios extends MY_Controller
             $cabecalho = [
                 'ID OS' => 'integer',
                 'Cliente' => 'string',
+                'Placa' => 'string',
                 'Status' => 'string',
                 'Data' => 'YYYY-MM-DD',
                 'Descrição' => 'string',
@@ -586,6 +591,7 @@ class Relatorios extends MY_Controller
             }
             $writer->writeSheetRow('Sheet1', []);
             $writer->writeSheetRow('Sheet1', [
+                null,
                 null,
                 null,
                 null,

@@ -21,22 +21,21 @@ services:
   php-fpm:
     container_name: php-fpm
     build:
-      context: ./etc/php
-      dockerfile: Dockerfile
+      context: ..
+      dockerfile: docker/etc/php/Dockerfile
     restart: always
     volumes:
       - "./etc/php/php.ini:/usr/local/etc/php/conf.d/php.ini"
       - "./etc/php/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini"
-      - "../:/var/www/html"
-
-  composer:
-    container_name: composer
-    build:
-      context: ./etc/composer
-      dockerfile: Dockerfile
-    volumes:
-      - "../:/app"
-    command: install --ignore-platform-reqs --no-scripts
+      # Só o que precisa ser lido/escrito em tempo real fica montado do host
+      # (o restante do código PHP e o vendor/ já vêm "assados" dentro da imagem -
+      # ler dezenas de arquivos PHP por requisição através do bind mount
+      # Windows -> WSL2 é o principal motivo do sistema ficar lento no Docker Desktop).
+      - "../application/.env:/var/www/html/application/.env"
+      - "../application/logs:/var/www/html/application/logs"
+      - "../application/cache:/var/www/html/application/cache"
+      - "../assets/uploads:/var/www/html/assets/uploads"
+      - "../assets/userImage:/var/www/html/assets/userImage"
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -66,4 +65,7 @@ services:
     ports:
       - "${MYSQL_MAPOS_PORT}:3306"
     volumes:
-      - "./data/db/mysql:/var/lib/mysql"
+      - "mapos_mysql_data:/var/lib/mysql"
+
+volumes:
+  mapos_mysql_data:

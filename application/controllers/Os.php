@@ -115,6 +115,7 @@ class Os extends MY_Controller
             $data = [
                 'dataInicial' => $dataInicial,
                 'clientes_id' => $this->input->post('clientes_id'), //set_value('idCliente'),
+                'veiculos_id' => $this->input->post('veiculos_id') ?: null,
                 'usuarios_id' => $this->input->post('usuarios_id'), //set_value('idUsuario'),
                 'dataFinal' => $dataFinal,
                 'garantia' => set_value('garantia'),
@@ -227,6 +228,7 @@ class Os extends MY_Controller
                 'laudoTecnico' => $this->input->post('laudoTecnico'),
                 'usuarios_id' => $this->input->post('usuarios_id'),
                 'clientes_id' => $this->input->post('clientes_id'),
+                'veiculos_id' => $this->input->post('veiculos_id') ?: null,
             ];
             $os = $this->os_model->getById($this->input->post('idOs'));
 
@@ -650,6 +652,60 @@ class Os extends MY_Controller
         if (isset($_GET['term'])) {
             $q = strtolower($_GET['term']);
             $this->os_model->autoCompleteCliente($q);
+        }
+    }
+
+    public function autoCompleteVeiculo()
+    {
+        if (isset($_GET['term'])) {
+            $q = strtolower($_GET['term']);
+            $this->load->model('veiculos_model');
+            $this->veiculos_model->autoCompleteVeiculo($q);
+        }
+    }
+
+    public function adicionarVeiculoRapido()
+    {
+        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'aVeiculo')) {
+            echo json_encode(['result' => false, 'error' => 'Você não tem permissão para cadastrar veículos.']);
+
+            return;
+        }
+
+        $this->load->model('veiculos_model');
+        $this->load->library('form_validation');
+
+        if ($this->form_validation->run('veiculos') == false) {
+            echo json_encode(['result' => false, 'error' => strip_tags(validation_errors())]);
+
+            return;
+        }
+
+        $placa = strtoupper($this->input->post('placa'));
+
+        if ($this->veiculos_model->placaExists($placa)) {
+            echo json_encode(['result' => false, 'error' => 'Esta placa já está cadastrada.']);
+
+            return;
+        }
+
+        $data = [
+            'placa' => $placa,
+            'modelo' => $this->input->post('modelo'),
+            'ano' => $this->input->post('ano'),
+            'cor' => $this->input->post('cor'),
+            'km' => $this->input->post('km') ?: null,
+            'chassi' => $this->input->post('chassi'),
+            'dataCadastro' => date('Y-m-d'),
+        ];
+
+        $id = $this->veiculos_model->add('veiculos', $data);
+
+        if (is_numeric($id)) {
+            log_info('Adicionou um veículo via cadastro rápido na OS. ID: ' . $id);
+            echo json_encode(['result' => true, 'id' => $id, 'placa' => $data['placa'], 'modelo' => $data['modelo']]);
+        } else {
+            echo json_encode(['result' => false, 'error' => 'Ocorreu um erro ao cadastrar o veículo.']);
         }
     }
 

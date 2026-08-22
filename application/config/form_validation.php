@@ -58,6 +58,38 @@ $config = [
             'rules' => 'trim',
         ],
     ],
+    'veiculos' => [
+        [
+            'field' => 'placa',
+            'label' => 'Placa',
+            'rules' => 'trim|required|max_length[10]|unique[veiculos.placa.' . get_instance()->uri->segment(3) . '.idVeiculos]',
+        ],
+        [
+            'field' => 'modelo',
+            'label' => 'Modelo',
+            'rules' => 'trim|required',
+        ],
+        [
+            'field' => 'ano',
+            'label' => 'Ano',
+            'rules' => 'trim',
+        ],
+        [
+            'field' => 'cor',
+            'label' => 'Cor',
+            'rules' => 'trim',
+        ],
+        [
+            'field' => 'km',
+            'label' => 'KM',
+            'rules' => 'trim|numeric',
+        ],
+        [
+            'field' => 'chassi',
+            'label' => 'Chassi',
+            'rules' => 'trim',
+        ],
+    ],
     'servicos' => [
         [
             'field' => 'nome',

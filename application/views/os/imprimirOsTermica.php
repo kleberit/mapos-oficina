@@ -132,6 +132,12 @@ if (!empty($result->cidade) || !empty($result->estado) || !empty($result->cep)) 
 }
 ?></span>
                                             </li>
+                                            <?php if (! empty($result->veiculos_id)) : ?>
+                                                <li>
+                                                    <span><b>VEÍCULO</b></br></span>
+                                                    <span><?= $result->placa ?> - <?= $result->modelo ?><?= $result->cor ? ' / ' . $result->cor : '' ?></br></span>
+                                                </li>
+                                            <?php endif; ?>
                                         </ul>
                                     </td>
                                 </tr>
@@ -340,6 +346,12 @@ if (!empty($result->cidade) || !empty($result->estado) || !empty($result->cep)) 
 }
 ?></span>
                                             </li>
+                                            <?php if (! empty($result->veiculos_id)) : ?>
+                                                <li>
+                                                    <span><b>VEÍCULO</b></br></span>
+                                                    <span><?= $result->placa ?> - <?= $result->modelo ?><?= $result->cor ? ' / ' . $result->cor : '' ?></br></span>
+                                                </li>
+                                            <?php endif; ?>
                                         </ul>
                                     </td>
                                 </tr>

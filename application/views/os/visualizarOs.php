@@ -122,6 +122,27 @@ if (!empty($result->cidade) || !empty($result->estado) || !empty($result->cep)) 
                             </tbody>
                         </table>
 
+                        <?php if (! empty($result->veiculos_id)) : ?>
+                            <table class="table table-condensend">
+                                <tbody>
+                                    <tr>
+                                        <td style="padding-left: 0">
+                                            <span>
+                                                <h5><b>VEÍCULO</b></h5>
+                                                <span><i class='bx bx-car'></i> <b><?php echo $result->placa ?></b> - <?php echo $result->modelo ?></span><br />
+                                                <?php if ($result->ano || $result->cor) : ?>
+                                                    <span><?= trim(($result->ano ? 'Ano: '.$result->ano.' ' : '').($result->cor ? '/ Cor: '.$result->cor : '')) ?></span><br />
+                                                <?php endif; ?>
+                                                <?php if ($result->km) : ?>
+                                                    <span>KM: <?= $result->km ?></span><br />
+                                                <?php endif; ?>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        <?php endif; ?>
+
                     </div>
 
                     <div style="margin-top: 0; padding-top: 0">

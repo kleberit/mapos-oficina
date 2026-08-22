@@ -87,6 +87,16 @@
                                         </div>
                                     </div>
                                     <div class="span12" style="padding: 1%; margin-left: 0">
+                                        <div class="span6" style="margin-left: 0">
+                                            <label for="veiculo">Veículo (Placa)</label>
+                                            <input id="veiculo" class="span12" type="text" name="veiculo" value="<?php echo $result->veiculos_id ? $result->placa . ' - ' . $result->modelo : ''; ?>" autocomplete="off" />
+                                            <input id="veiculos_id" class="span12" type="hidden" name="veiculos_id" value="<?php echo $result->veiculos_id ?>" />
+                                            <a href="#modal-veiculo-rapido" role="button" data-toggle="modal" class="button btn btn-mini btn-success" style="margin-top:5px">
+                                                <span class="button__icon"><i class='bx bx-plus-circle'></i></span><span class="button__text2">Cadastrar veículo</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="span12" style="padding: 1%; margin-left: 0">
                                         <div class="span3">
                                             <label for="status">Status<span class="required">*</span></label>
                                             <select class="span12" name="status" id="status" value="">
@@ -471,6 +481,47 @@ if (!$anotacoes) {
         <a href="" id-imagem="" class="btn btn-inverse" id="download">Download</a>
         <a href="" link="" class="btn btn-danger" id="excluir-anexo">Excluir Anexo</a>
     </div>
+</div>
+
+<!-- Modal cadastro rápido de veículo -->
+<div id="modal-veiculo-rapido" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabelVeiculo" aria-hidden="true">
+    <form action="#" method="POST" id="formVeiculoRapido">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="myModalLabelVeiculo">Cadastrar Veículo</h3>
+        </div>
+        <div class="modal-body">
+            <div class="span12" id="divErroVeiculoRapido" style="margin-left: 0"></div>
+            <div class="span6" style="margin-left: 0">
+                <label for="placaRapida">Placa<span class="required">*</span></label>
+                <input class="span12" type="text" name="placa" id="placaRapida" style="text-transform:uppercase" maxlength="10" />
+            </div>
+            <div class="span6" style="margin-left: 0">
+                <label for="modeloRapido">Modelo<span class="required">*</span></label>
+                <input class="span12" type="text" name="modelo" id="modeloRapido" />
+            </div>
+            <div class="span4" style="margin-left: 0">
+                <label for="anoRapido">Ano</label>
+                <input class="span12" type="text" name="ano" id="anoRapido" placeholder="Ex: 2020/2021" />
+            </div>
+            <div class="span4" style="margin-left: 0">
+                <label for="corRapida">Cor</label>
+                <input class="span12" type="text" name="cor" id="corRapida" />
+            </div>
+            <div class="span4" style="margin-left: 0">
+                <label for="kmRapido">KM</label>
+                <input class="span12" type="text" name="km" id="kmRapido" />
+            </div>
+            <div class="span12" style="margin-left: 0">
+                <label for="chassiRapido">Chassi</label>
+                <input class="span12" type="text" name="chassi" id="chassiRapido" />
+            </div>
+        </div>
+        <div class="modal-footer" style="display:flex;justify-content: center">
+            <button type="button" class="btn" data-dismiss="modal" aria-hidden="true" id="btn-close-veiculo-rapido">Fechar</button>
+            <button class="btn btn-primary" type="submit">Cadastrar</button>
+        </div>
+    </form>
 </div>
 
 <!-- Modal cadastro anotações -->
@@ -891,6 +942,58 @@ if (!$anotacoes) {
                 if (ui.item.id) {
                     $("#garantias_id").val(ui.item.id);
                 }
+            }
+        });
+
+        $("#veiculo").autocomplete({
+            source: "<?php echo base_url(); ?>index.php/os/autoCompleteVeiculo",
+            minLength: 1,
+            select: function (event, ui) {
+                $("#veiculos_id").val(ui.item.id);
+            }
+        });
+        $("#veiculo").on('input', function () {
+            $("#veiculos_id").val('');
+        });
+
+        $("#formVeiculoRapido").validate({
+            rules: {
+                placa: {
+                    required: true
+                },
+                modelo: {
+                    required: true
+                }
+            },
+            messages: {
+                placa: {
+                    required: 'Campo Requerido.'
+                },
+                modelo: {
+                    required: 'Campo Requerido.'
+                }
+            },
+            submitHandler: function (form) {
+                var dados = $(form).serialize();
+                $("#divErroVeiculoRapido").html('');
+
+                $.ajax({
+                    type: "POST",
+                    url: "<?php echo base_url(); ?>index.php/os/adicionarVeiculoRapido",
+                    data: dados,
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.result == true) {
+                            $("#veiculo").val(data.placa + ' - ' + data.modelo);
+                            $("#veiculos_id").val(data.id);
+                            $('#formVeiculoRapido')[0].reset();
+                            $('#modal-veiculo-rapido').modal('hide');
+                        } else {
+                            $("#divErroVeiculoRapido").html('<div class="alert alert-danger">' + data.error + '</div>');
+                        }
+                    }
+                });
+                return false;
             }
         });
 

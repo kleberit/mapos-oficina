@@ -131,6 +131,9 @@ $totalProdutos = 0; ?>
                         <tr>
                             <td>
                                 Cliente: <?= $result->nomeCliente ?><br>
+                                <?php if (! empty($result->veiculos_id)) : ?>
+                                    Veículo: <?= $result->placa ?> - <?= $result->modelo ?><br>
+                                <?php endif; ?>
                                 <?= $result->rua ?>, <?= $result->numero ?>, <?= $result->bairro ?><br>
                                 <?= $result->cidade ?> - <?= $result->estado ?> <br>
                                 <?= $result->email ?> <br>

@@ -262,9 +262,10 @@ class Relatorios_model extends CI_Model
         $query = 'CREATE TEMPORARY TABLE IF NOT EXISTS total_servicos SELECT SUM(subTotal) as total_servico, os_id FROM servicos_os GROUP BY os_id; ';
         $this->db->query($query);
 
-        $this->db->select('os.*,clientes.nomeCliente, total_servicos.total_servico, total_produtos.total_produto');
+        $this->db->select('os.*,clientes.nomeCliente, veiculos.placa, veiculos.modelo, total_servicos.total_servico, total_produtos.total_produto');
         $this->db->from('os');
         $this->db->join('clientes', 'clientes.idClientes = os.clientes_id');
+        $this->db->join('veiculos', 'veiculos.idVeiculos = os.veiculos_id', 'left');
         $this->db->join('total_produtos', 'total_produtos.os_id = os.idOs', 'left');
         $this->db->join('total_servicos', 'total_servicos.os_id = os.idOs', 'left');
         $this->db->order_by('os.dataInicial', 'DESC');
@@ -304,10 +305,11 @@ class Relatorios_model extends CI_Model
         $query = 'CREATE TEMPORARY TABLE IF NOT EXISTS total_servicos SELECT SUM(subTotal) as total_servico, os_id FROM servicos_os GROUP BY os_id; ';
         $this->db->query($query);
 
-        $query = "SELECT os.*,clientes.nomeCliente, total_servicos.total_servico, total_produtos.total_produto FROM os
+        $query = "SELECT os.*,clientes.nomeCliente, veiculos.placa, veiculos.modelo, total_servicos.total_servico, total_produtos.total_produto FROM os
                    LEFT JOIN total_produtos ON total_produtos.os_id = os.idOs
                    LEFT JOIN total_servicos ON total_servicos.os_id = os.idOs
                    LEFT JOIN clientes ON os.clientes_id = clientes.idClientes
+                   LEFT JOIN veiculos ON os.veiculos_id = veiculos.idVeiculos
                    WHERE idOs != 0 $whereData $whereCliente $whereResponsavel $whereStatus
                    ORDER BY os.dataInicial";
 

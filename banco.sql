@@ -45,7 +45,32 @@ ENGINE = InnoDB
 AUTO_INCREMENT = 1
 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 
-CREATE TABLE IF NOT EXISTS `resets_de_senha` ( 
+-- -----------------------------------------------------
+-- Table `veiculos`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `veiculos` (
+  `idVeiculos` INT(11) NOT NULL AUTO_INCREMENT,
+  `placa` VARCHAR(10) NOT NULL,
+  `modelo` VARCHAR(100) NOT NULL,
+  `ano` VARCHAR(9) NULL DEFAULT NULL,
+  `cor` VARCHAR(30) NULL DEFAULT NULL,
+  `km` INT(11) NULL DEFAULT NULL,
+  `chassi` VARCHAR(30) NULL DEFAULT NULL,
+  `clientes_id` INT(11) NULL DEFAULT NULL,
+  `dataCadastro` DATE NULL DEFAULT NULL,
+  PRIMARY KEY (`idVeiculos`),
+  UNIQUE INDEX `uq_veiculos_placa` (`placa` ASC),
+  INDEX `fk_veiculos_clientes1_idx` (`clientes_id` ASC),
+  CONSTRAINT `fk_veiculos_clientes1`
+    FOREIGN KEY (`clientes_id`)
+    REFERENCES `clientes` (`idClientes`)
+    ON DELETE SET NULL
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+AUTO_INCREMENT = 1
+DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `resets_de_senha` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `email` VARCHAR(200) NOT NULL , 
   `token` VARCHAR(255) NOT NULL , 
@@ -225,12 +250,14 @@ CREATE TABLE IF NOT EXISTS `os` (
   `valor_desconto` DECIMAL(10, 2) NULL DEFAULT 0,
   `tipo_desconto` varchar(8) NULL DEFAULT NULL,
   `clientes_id` INT(11) NOT NULL,
+  `veiculos_id` INT(11) NULL DEFAULT NULL,
   `usuarios_id` INT(11) NOT NULL,
   `lancamento` INT(11) NULL DEFAULT NULL,
   `faturado` TINYINT(1) NOT NULL,
   `garantias_id` int(11) NULL,
   PRIMARY KEY (`idOs`),
   INDEX `fk_os_clientes1` (`clientes_id` ASC),
+  INDEX `fk_os_veiculos1_idx` (`veiculos_id` ASC),
   INDEX `fk_os_usuarios1` (`usuarios_id` ASC),
   INDEX `fk_os_lancamentos1` (`lancamento` ASC),
   INDEX `fk_os_garantias1` (`garantias_id` ASC),
@@ -238,6 +265,11 @@ CREATE TABLE IF NOT EXISTS `os` (
     FOREIGN KEY (`clientes_id`)
     REFERENCES `clientes` (`idClientes`)
     ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_os_veiculos1`
+    FOREIGN KEY (`veiculos_id`)
+    REFERENCES `veiculos` (`idVeiculos`)
+    ON DELETE SET NULL
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_os_lancamentos1`
     FOREIGN KEY (`lancamento`)
@@ -652,12 +684,12 @@ INSERT IGNORE INTO `configuracoes` (`idConfig`, `config`, `valor`) VALUES
 (15, 'control_2vias', '0');
 
 INSERT IGNORE INTO `permissoes` (`idPermissao`, `nome`, `permissoes`, `situacao`, `data`) VALUES
-(1, 'Administrador', 'a:53:{s:8:"aCliente";s:1:"1";s:8:"eCliente";s:1:"1";s:8:"dCliente";s:1:"1";s:8:"vCliente";s:1:"1";s:8:"aProduto";s:1:"1";s:8:"eProduto";s:1:"1";s:8:"dProduto";s:1:"1";s:8:"vProduto";s:1:"1";s:8:"aServico";s:1:"1";s:8:"eServico";s:1:"1";s:8:"dServico";s:1:"1";s:8:"vServico";s:1:"1";s:3:"aOs";s:1:"1";s:3:"eOs";s:1:"1";s:3:"dOs";s:1:"1";s:3:"vOs";s:1:"1";s:6:"aVenda";s:1:"1";s:6:"eVenda";s:1:"1";s:6:"dVenda";s:1:"1";s:6:"vVenda";s:1:"1";s:9:"aGarantia";s:1:"1";s:9:"eGarantia";s:1:"1";s:9:"dGarantia";s:1:"1";s:9:"vGarantia";s:1:"1";s:8:"aArquivo";s:1:"1";s:8:"eArquivo";s:1:"1";s:8:"dArquivo";s:1:"1";s:8:"vArquivo";s:1:"1";s:10:"aPagamento";N;s:10:"ePagamento";N;s:10:"dPagamento";N;s:10:"vPagamento";N;s:11:"aLancamento";s:1:"1";s:11:"eLancamento";s:1:"1";s:11:"dLancamento";s:1:"1";s:11:"vLancamento";s:1:"1";s:8:"cUsuario";s:1:"1";s:9:"cEmitente";s:1:"1";s:10:"cPermissao";s:1:"1";s:7:"cBackup";s:1:"1";s:10:"cAuditoria";s:1:"1";s:6:"cEmail";s:1:"1";s:8:"cSistema";s:1:"1";s:8:"rCliente";s:1:"1";s:8:"rProduto";s:1:"1";s:8:"rServico";s:1:"1";s:3:"rOs";s:1:"1";s:6:"rVenda";s:1:"1";s:11:"rFinanceiro";s:1:"1";s:9:"aCobranca";s:1:"1";s:9:"eCobranca";s:1:"1";s:9:"dCobranca";s:1:"1";s:9:"vCobranca";s:1:"1";}', 1, 'admin_created_at');
+(1, 'Administrador', 'a:57:{s:8:"aCliente";s:1:"1";s:8:"eCliente";s:1:"1";s:8:"dCliente";s:1:"1";s:8:"vCliente";s:1:"1";s:8:"aVeiculo";s:1:"1";s:8:"eVeiculo";s:1:"1";s:8:"dVeiculo";s:1:"1";s:8:"vVeiculo";s:1:"1";s:8:"aProduto";s:1:"1";s:8:"eProduto";s:1:"1";s:8:"dProduto";s:1:"1";s:8:"vProduto";s:1:"1";s:8:"aServico";s:1:"1";s:8:"eServico";s:1:"1";s:8:"dServico";s:1:"1";s:8:"vServico";s:1:"1";s:3:"aOs";s:1:"1";s:3:"eOs";s:1:"1";s:3:"dOs";s:1:"1";s:3:"vOs";s:1:"1";s:6:"aVenda";s:1:"1";s:6:"eVenda";s:1:"1";s:6:"dVenda";s:1:"1";s:6:"vVenda";s:1:"1";s:9:"aGarantia";s:1:"1";s:9:"eGarantia";s:1:"1";s:9:"dGarantia";s:1:"1";s:9:"vGarantia";s:1:"1";s:8:"aArquivo";s:1:"1";s:8:"eArquivo";s:1:"1";s:8:"dArquivo";s:1:"1";s:8:"vArquivo";s:1:"1";s:10:"aPagamento";N;s:10:"ePagamento";N;s:10:"dPagamento";N;s:10:"vPagamento";N;s:11:"aLancamento";s:1:"1";s:11:"eLancamento";s:1:"1";s:11:"dLancamento";s:1:"1";s:11:"vLancamento";s:1:"1";s:8:"cUsuario";s:1:"1";s:9:"cEmitente";s:1:"1";s:10:"cPermissao";s:1:"1";s:7:"cBackup";s:1:"1";s:10:"cAuditoria";s:1:"1";s:6:"cEmail";s:1:"1";s:8:"cSistema";s:1:"1";s:8:"rCliente";s:1:"1";s:8:"rProduto";s:1:"1";s:8:"rServico";s:1:"1";s:3:"rOs";s:1:"1";s:6:"rVenda";s:1:"1";s:11:"rFinanceiro";s:1:"1";s:9:"aCobranca";s:1:"1";s:9:"eCobranca";s:1:"1";s:9:"dCobranca";s:1:"1";s:9:"vCobranca";s:1:"1";}', 1, 'admin_created_at');
 
 INSERT IGNORE INTO `usuarios` (`idUsuarios`, `nome`, `rg`, `cpf`, `cep`, `rua`, `numero`, `bairro`, `cidade`, `estado`, `email`, `senha`, `telefone`, `celular`, `situacao`, `dataCadastro`, `permissoes_id`,`dataExpiracao`) VALUES
 (1, 'admin_name', 'MG-25.502.560', '600.021.520-87', '70005-115', 'Rua Acima', '12', 'Alvorada', 'Teste', 'MG', 'admin_email', 'admin_password', '000000-0000', '', 1, 'admin_created_at', 1, '3000-01-01');
 
-INSERT IGNORE INTO `migrations`(`version`) VALUES ('20210125173741');
+INSERT IGNORE INTO `migrations`(`version`) VALUES ('20260821181715');
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

@@ -30,6 +30,7 @@
                                 <tr>
                                     <th width="70" align="center" style="font-size: 12px">OS</th>
                                     <th width="200" align="center" style="font-size: 12px">CLIENTE</th>
+                                    <th width="90" align="center" style="font-size: 12px">PLACA</th>
                                     <th width="150" align="center" style="font-size: 12px">STATUS</th>
                                     <th width="100" align="center" style="font-size: 12px">DATA</th>
                                     <th width="400" align="center" style="font-size: 12px">DESCRIÇÃO</th>
@@ -46,6 +47,7 @@
                                         echo '<tr>';
                                         echo '<td align="center"><small>' . $c->idOs . '</small></td>';
                                         echo '<td><small>' . $c->nomeCliente . '</small></td>';
+                                        echo '<td align="center"><small>' . $c->placa . '</small></td>';
                                         echo '<td align="center"><small>' . $c->status . '</small></td>';
                                         echo '<td align="center"><small>' . date('d/m/Y', strtotime($c->dataInicial)) . '</small></td>';
                                         echo '<td><small>' . $c->descricaoProduto . '</small></td>';
@@ -59,7 +61,7 @@
     ?>
 
                                 <tr style="background-color: gainsboro;">
-                                    <td colspan="5"></td>
+                                    <td colspan="6"></td>
                                     <td align="center"><small>R$: <?= number_format($total_produtos, 2, ',', '.') ?></small></td>
                                     <td align="center"><small>R$: <?= number_format($total_servicos, 2, ',', '.') ?></small></td>
                                     <td align="center"><small>R$: <?= number_format($total_produtos + $total_servicos, 2, ',', '.') ?> </small></td>

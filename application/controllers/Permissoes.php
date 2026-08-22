@@ -61,6 +61,11 @@ class Permissoes extends MY_Controller
                 'dCliente' => $this->input->post('dCliente'),
                 'vCliente' => $this->input->post('vCliente'),
 
+                'aVeiculo' => $this->input->post('aVeiculo'),
+                'eVeiculo' => $this->input->post('eVeiculo'),
+                'dVeiculo' => $this->input->post('dVeiculo'),
+                'vVeiculo' => $this->input->post('vVeiculo'),
+
                 'aProduto' => $this->input->post('aProduto'),
                 'eProduto' => $this->input->post('eProduto'),
                 'dProduto' => $this->input->post('dProduto'),
@@ -161,6 +166,11 @@ class Permissoes extends MY_Controller
                 'eCliente' => $this->input->post('eCliente'),
                 'dCliente' => $this->input->post('dCliente'),
                 'vCliente' => $this->input->post('vCliente'),
+
+                'aVeiculo' => $this->input->post('aVeiculo'),
+                'eVeiculo' => $this->input->post('eVeiculo'),
+                'dVeiculo' => $this->input->post('dVeiculo'),
+                'vVeiculo' => $this->input->post('vVeiculo'),
 
                 'aProduto' => $this->input->post('aProduto'),
                 'eProduto' => $this->input->post('eProduto'),

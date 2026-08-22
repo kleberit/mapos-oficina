@@ -51,6 +51,17 @@
                     </li>
                 <?php } ?>
 
+                <?php if ($this->permission->checkPermission($this->session->userdata('permissao'), 'vVeiculo')) { ?>
+                    <li class="<?php if (isset($menuVeiculos)) {
+                        echo 'active';
+                    }; ?>">
+                        <a class="tip-bottom" title="" href="<?= site_url('veiculos') ?>"><i class='bx bx-car iconX'></i>
+                            <span class="title">Veículos</span>
+                            <span class="title-tooltip">Veículos</span>
+                        </a>
+                    </li>
+                <?php } ?>
+
                 <?php if ($this->permission->checkPermission($this->session->userdata('permissao'), 'vProduto')) { ?>
                     <li class="<?php if (isset($menuProdutos)) {
                         echo 'active';
