@@ -91,7 +91,7 @@
                                             <label for="veiculo">Veículo (Placa)</label>
                                             <input id="veiculo" class="span12" type="text" name="veiculo" value="<?php echo $result->veiculos_id ? $result->placa . ' - ' . $result->modelo : ''; ?>" autocomplete="off" />
                                             <input id="veiculos_id" class="span12" type="hidden" name="veiculos_id" value="<?php echo $result->veiculos_id ?>" />
-                                            <a href="#modal-veiculo-rapido" role="button" data-toggle="modal" class="button btn btn-mini btn-success" style="margin-top:5px">
+                                            <a href="#modal-veiculo-rapido" role="button" data-toggle="modal" class="button btn btn-mini btn-success" style="margin-top:5px; width: 200px;">
                                                 <span class="button__icon"><i class='bx bx-plus-circle'></i></span><span class="button__text2">Cadastrar veículo</span>
                                             </a>
                                         </div>
