@@ -86,7 +86,7 @@
                                             <input id="usuarios_id" class="span12" type="hidden" name="usuarios_id" value="<?php echo $result->usuarios_id ?>" />
                                         </div>
                                     </div>
-                                    <div class="span12" style="padding: 1%; margin-left: 0">
+                                    <div class="span12" style="padding: 1%; margin-left: 0; overflow: auto;">
                                         <div class="span6" style="margin-left: 0">
                                             <label for="veiculo">Veículo (Placa)</label>
                                             <input id="veiculo" class="span12" type="text" name="veiculo" value="<?php echo $result->veiculos_id ? $result->placa . ' - ' . $result->modelo : ''; ?>" autocomplete="off" />

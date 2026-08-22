@@ -40,7 +40,7 @@
                                             <input id="usuarios_id" class="span12" type="hidden" name="usuarios_id" value="<?= $this->session->userdata('id_admin'); ?>" />
                                         </div>
                                     </div>
-                                    <div class="span12" style="padding: 1%">
+                                    <div class="span12" style="padding: 1%; overflow: auto;">
                                         <div class="span6">
                                             <label for="veiculo">Veículo (Placa)</label>
                                             <input id="veiculo" class="span12" type="text" name="veiculo" value="" autocomplete="off" />
