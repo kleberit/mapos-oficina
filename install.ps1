@@ -12,6 +12,7 @@
       - Sobe os containers (nginx + php-fpm + mysql + phpmyadmin)
       - Roda a instalação do sistema direto no banco (sem precisar abrir o instalador web)
       - Cria a pasta de backup em C:\BKP-MAPOS
+      - Cria um atalho pro sistema na área de trabalho (pra todo mundo que usar o PC)
       - Configura o sistema pra subir sozinho toda vez que o PC ligar
 
 .USO (rodar no PowerShell como Administrador)
@@ -405,7 +406,25 @@ try {
 }
 
 # ============================================================
-# 9. Subida automática ao ligar o PC
+# 9. Atalho na área de trabalho
+# ============================================================
+
+Log "Criando atalho na área de trabalho..."
+try {
+    # Área de trabalho pública (C:\Users\Public\Desktop) em vez da do usuário atual: o
+    # script roda elevado, então $env:USERPROFILE\Desktop seria a do Administrador, não a
+    # de quem realmente vai usar o sistema no dia a dia nesse PC da oficina.
+    $desktopPath = [Environment]::GetFolderPath("CommonDesktopDirectory")
+    $shortcutPath = Join-Path $desktopPath "MAPOS - Oficina.url"
+    $shortcutContent = "[InternetShortcut]`r`nURL=$baseUrl`r`nIconIndex=0`r`n"
+    Set-Content -Path $shortcutPath -Value $shortcutContent -Encoding ascii
+    Log "Atalho criado em $shortcutPath (aponta para $baseUrl)."
+} catch {
+    Log "AVISO: não consegui criar o atalho na área de trabalho ($($_.Exception.Message)). Acesse manualmente em $baseUrl"
+}
+
+# ============================================================
+# 10. Subida automática ao ligar o PC
 # ============================================================
 
 Log "Configurando a subida automática no logon do Windows..."
@@ -424,6 +443,7 @@ Write-Host "=====================================================" -ForegroundCo
 Write-Host " Instalação concluída!" -ForegroundColor Green
 Write-Host "====================================================="
 Write-Host " Sistema:  $baseUrl"
+Write-Host " Atalho:   área de trabalho ($shortcutPath)"
 Write-Host " Login:    $AdminEmail"
 Write-Host " Backups:  $BackupDir (script pronto em docker\backup\backup.ps1)"
 Write-Host " Log:      $LogFile"
