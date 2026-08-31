@@ -12,7 +12,7 @@ Abra o **PowerShell como Administrador** e rode:
 
 ```powershell
 iwr -useb https://raw.githubusercontent.com/kleberit/mapos-oficina/main/install.ps1 -OutFile "$env:TEMP\mapos-install.ps1"
-& "$env:TEMP\mapos-install.ps1"
+powershell -ExecutionPolicy Bypass -File "$env:TEMP\mapos-install.ps1"
 ```
 
 O script instala o Docker Desktop (se ainda não tiver), baixa o sistema, sobe os containers,

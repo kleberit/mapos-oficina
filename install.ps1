@@ -16,7 +16,10 @@
 
 .USO (rodar no PowerShell como Administrador)
     iwr -useb https://raw.githubusercontent.com/kleberit/mapos-oficina/main/install.ps1 -OutFile "$env:TEMP\mapos-install.ps1"
-    & "$env:TEMP\mapos-install.ps1"
+    powershell -ExecutionPolicy Bypass -File "$env:TEMP\mapos-install.ps1"
+
+    O -ExecutionPolicy Bypass é necessário porque, por padrão, o Windows bloqueia a execução de
+    scripts .ps1 baixados da internet (erro "UnauthorizedAccess" / "PSSecurityException").
 
     O script vai perguntar o nome, e-mail e senha do administrador do sistema logo no início.
 
