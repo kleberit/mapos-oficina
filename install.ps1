@@ -38,6 +38,9 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+# Sem isso, o Invoke-WebRequest desenha a barra de progresso a cada pedaço baixado,
+# o que deixa downloads grandes (instalador do Docker, zip do repo) MUITO mais lentos.
+$ProgressPreference = "SilentlyContinue"
 $StateDir = "C:\ProgramData\MAPOS-Install"
 $StateFile = Join-Path $StateDir "state.json"
 $LogFile = Join-Path $StateDir "install.log"
