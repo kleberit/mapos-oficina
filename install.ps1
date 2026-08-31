@@ -285,7 +285,10 @@ $encryptionKey = New-RandomSecret 32
 $jwtKey = New-RandomBase64 32
 
 $localIp = Get-LocalIPv4
-if (-not $localIp) {
+while (-not $localIp) {
+    # Loop em vez de perguntar só uma vez: se cair aqui com a entrada padrão (uma tecla Enter
+    # perdida no buffer do terminal, por exemplo, de um Ctrl+V de várias linhas) sem essa
+    # trava, o baseurl sai quebrado tipo "http:///" e o sistema fica inacessível em silêncio.
     Log "Não consegui detectar o IP local automaticamente."
     $localIp = Read-Host "Digite o IP local desta máquina (ex: 192.168.1.50)"
 }
