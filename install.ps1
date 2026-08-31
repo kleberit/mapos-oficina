@@ -16,7 +16,10 @@
 
 .USO (rodar no PowerShell como Administrador)
     iwr -useb https://raw.githubusercontent.com/kleberit/mapos-oficina/main/install.ps1 -OutFile "$env:TEMP\mapos-install.ps1"
-    & "$env:TEMP\mapos-install.ps1"
+    powershell -ExecutionPolicy Bypass -File "$env:TEMP\mapos-install.ps1"
+
+    O -ExecutionPolicy Bypass é necessário porque, por padrão, o Windows bloqueia a execução de
+    scripts .ps1 baixados da internet (erro "UnauthorizedAccess" / "PSSecurityException").
 
     O script vai perguntar o nome, e-mail e senha do administrador do sistema logo no início.
 
@@ -35,6 +38,9 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+# Sem isso, o Invoke-WebRequest desenha a barra de progresso a cada pedaço baixado,
+# o que deixa downloads grandes (instalador do Docker, zip do repo) MUITO mais lentos.
+$ProgressPreference = "SilentlyContinue"
 $StateDir = "C:\ProgramData\MAPOS-Install"
 $StateFile = Join-Path $StateDir "state.json"
 $LogFile = Join-Path $StateDir "install.log"
@@ -109,8 +115,10 @@ if ($Resume) {
     $AdminEmail = $state.AdminEmail
     $AdminPassword = $state.AdminPassword
 
-    # Tarefa de retomada já cumpriu o papel dela
-    schtasks /Delete /TN $TaskName /F 2>$null | Out-Null
+    # Tarefa de retomada já cumpriu o papel dela. Com $ErrorActionPreference = "Stop", a
+    # saída de erro do schtasks vira exceção mesmo redirecionada com 2>$null (a tarefa pode
+    # já ter sido apagada por uma retomada automática anterior) — por isso o try/catch.
+    try { schtasks /Delete /TN $TaskName /F 2>$null | Out-Null } catch {}
 } else {
     Log "===== Iniciando instalação do MAPOS ====="
     Write-Host ""
@@ -193,7 +201,7 @@ if (Test-Path $dockerDesktopExe) {
 Log "Aguardando o Docker ficar pronto (isso pode levar de 1 a 3 minutos na primeira vez)..."
 $dockerReady = $false
 for ($i = 0; $i -lt 60; $i++) {
-    docker info *> $null
+    try { docker info *> $null } catch {}
     if ($LASTEXITCODE -eq 0) { $dockerReady = $true; break }
     Start-Sleep -Seconds 5
 }
@@ -301,7 +309,7 @@ Pop-Location
 Log "Aguardando o MySQL ficar pronto..."
 $mysqlReady = $false
 for ($i = 0; $i -lt 60; $i++) {
-    docker exec mysql mysqladmin ping -u root "-p$dbRootPassword" --silent *> $null
+    try { docker exec mysql mysqladmin ping -u root "-p$dbRootPassword" --silent *> $null } catch {}
     if ($LASTEXITCODE -eq 0) { $mysqlReady = $true; break }
     Start-Sleep -Seconds 5
 }
