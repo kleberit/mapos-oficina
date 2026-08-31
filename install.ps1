@@ -77,6 +77,24 @@ function New-RandomBase64([int]$ByteLength = 32) {
     return [Convert]::ToBase64String($bytes)
 }
 
+function Invoke-Native {
+    <#
+        Roda um bloco com comando(s) externo(s) (docker, mysql...) sob
+        $ErrorActionPreference = "Continue". Com "Stop" (o padrão do script), qualquer
+        linha de stderr — mesmo só aviso/progresso normal, tipo do docker compose e do
+        cliente mysql — vira exceção terminante e derruba o script no meio da instalação.
+        Quem chama continua conferindo $LASTEXITCODE depois, normalmente.
+    #>
+    param([Parameter(Mandatory)][scriptblock]$Command)
+    $prevEAP = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    try {
+        & $Command
+    } finally {
+        $ErrorActionPreference = $prevEAP
+    }
+}
+
 function Get-LocalIPv4 {
     $ip = Get-NetIPAddress -AddressFamily IPv4 -ErrorAction SilentlyContinue |
         Where-Object {
@@ -185,7 +203,11 @@ if (-not $dockerCmd) {
     Invoke-WebRequest -Uri "https://desktop.docker.com/win/main/amd64/Docker%20Desktop%20Installer.exe" -OutFile $dockerInstaller -UseBasicParsing
 
     Log "Instalando Docker Desktop silenciosamente (pode levar alguns minutos)..."
-    Start-Process -FilePath $dockerInstaller -ArgumentList "install", "--quiet", "--accept-license", "--backend=wsl2" -Wait
+    $installProc = Start-Process -FilePath $dockerInstaller -ArgumentList "install", "--quiet", "--accept-license", "--backend=wsl2" -Wait -PassThru
+    if ($installProc.ExitCode -ne 0 -or -not (Test-Path "C:\Program Files\Docker\Docker\Docker Desktop.exe")) {
+        Log "ERRO: instalação silenciosa do Docker Desktop falhou (código $($installProc.ExitCode)). Rode manualmente: $dockerInstaller"
+        exit 1
+    }
 
     Log "Docker Desktop instalado."
 } else {
@@ -303,8 +325,13 @@ Log "application\.env criado."
 
 Log "Subindo os containers (isso demora mais na primeira vez, precisa buildar as imagens)..."
 Push-Location (Join-Path $InstallDir "docker")
-docker compose up -d --build 2>&1 | Tee-Object -FilePath $LogFile -Append
+Invoke-Native { docker compose up -d --build 2>&1 | Tee-Object -FilePath $LogFile -Append }
+$composeExitCode = $LASTEXITCODE
 Pop-Location
+if ($composeExitCode -ne 0) {
+    Log "ERRO: 'docker compose up' falhou (código $composeExitCode). Confira o log acima e $LogFile."
+    exit 1
+}
 
 Log "Aguardando o MySQL ficar pronto..."
 $mysqlReady = $false
@@ -325,7 +352,7 @@ Log "MySQL pronto."
 
 Log "Criando o usuário administrador e montando o schema do banco..."
 
-$adminPasswordHash = ($AdminPassword | docker exec -i php-fpm php -r 'echo password_hash(trim(fgets(STDIN)), PASSWORD_DEFAULT);').Trim()
+$adminPasswordHash = (Invoke-Native { $AdminPassword | docker exec -i php-fpm php -r 'echo password_hash(trim(fgets(STDIN)), PASSWORD_DEFAULT);' }).Trim()
 if (-not $adminPasswordHash) {
     Log "ERRO: não consegui gerar o hash da senha do administrador."
     exit 1
@@ -342,7 +369,7 @@ $sql = $sql -replace 'admin_created_at', $now
 $tmpSql = Join-Path $env:TEMP "mapos_install.sql"
 Set-Content -Path $tmpSql -Value $sql -Encoding utf8
 
-Get-Content $tmpSql | docker exec -i mysql mysql -uroot "-p$dbRootPassword" mapos
+Invoke-Native { Get-Content $tmpSql | docker exec -i mysql mysql -uroot "-p$dbRootPassword" mapos }
 if ($LASTEXITCODE -ne 0) {
     Log "ERRO ao importar o banco de dados."
     exit 1
