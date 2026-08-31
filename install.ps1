@@ -115,8 +115,10 @@ if ($Resume) {
     $AdminEmail = $state.AdminEmail
     $AdminPassword = $state.AdminPassword
 
-    # Tarefa de retomada já cumpriu o papel dela
-    schtasks /Delete /TN $TaskName /F 2>$null | Out-Null
+    # Tarefa de retomada já cumpriu o papel dela. Com $ErrorActionPreference = "Stop", a
+    # saída de erro do schtasks vira exceção mesmo redirecionada com 2>$null (a tarefa pode
+    # já ter sido apagada por uma retomada automática anterior) — por isso o try/catch.
+    try { schtasks /Delete /TN $TaskName /F 2>$null | Out-Null } catch {}
 } else {
     Log "===== Iniciando instalação do MAPOS ====="
     Write-Host ""
@@ -199,7 +201,7 @@ if (Test-Path $dockerDesktopExe) {
 Log "Aguardando o Docker ficar pronto (isso pode levar de 1 a 3 minutos na primeira vez)..."
 $dockerReady = $false
 for ($i = 0; $i -lt 60; $i++) {
-    docker info *> $null
+    try { docker info *> $null } catch {}
     if ($LASTEXITCODE -eq 0) { $dockerReady = $true; break }
     Start-Sleep -Seconds 5
 }
@@ -307,7 +309,7 @@ Pop-Location
 Log "Aguardando o MySQL ficar pronto..."
 $mysqlReady = $false
 for ($i = 0; $i -lt 60; $i++) {
-    docker exec mysql mysqladmin ping -u root "-p$dbRootPassword" --silent *> $null
+    try { docker exec mysql mysqladmin ping -u root "-p$dbRootPassword" --silent *> $null } catch {}
     if ($LASTEXITCODE -eq 0) { $mysqlReady = $true; break }
     Start-Sleep -Seconds 5
 }
