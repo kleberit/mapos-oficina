@@ -42,6 +42,19 @@ function Log($msg) {
 Log "===== Iniciando start-mapos.ps1 ====="
 
 # --- 1. Espera o Docker ficar pronto ---
+# Da um start explicito no Docker Desktop caso ele ainda nao esteja de pe - nao da
+# pra confiar 100% na opcao "Start Docker Desktop when you log in" das settings dele
+# (fica facil de desmarcar sem querer, ou nao persistir numa atualizacao do Docker Desktop).
+if (-not (Get-Process "Docker Desktop" -ErrorAction SilentlyContinue)) {
+    $dockerDesktopExe = "C:\Program Files\Docker\Docker\Docker Desktop.exe"
+    if (Test-Path $dockerDesktopExe) {
+        Log "Docker Desktop nao estava rodando, iniciando..."
+        Start-Process $dockerDesktopExe
+    } else {
+        Log "AVISO: nao achei o Docker Desktop.exe em '$dockerDesktopExe'. Se ele estiver instalado em outro lugar, ajuste esse caminho no script."
+    }
+}
+
 Log "Aguardando o Docker Desktop ficar pronto..."
 $elapsed = 0
 $ready = $false
